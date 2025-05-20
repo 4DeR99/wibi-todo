@@ -22,6 +22,8 @@ const config: Config = {
     extend: {
       colors: {
         accent: '#007FF0',
+        'light-grey': '#F5F7F9',
+        'main-red': '#FF5E5E',
       },
     },
   },
