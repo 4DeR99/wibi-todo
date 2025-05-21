@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils'
 import { cva, VariantProps } from 'class-variance-authority'
+import { LoaderCircle } from 'lucide-react'
 import React from 'react'
 
 const buttonVariants = cva(
-  'font-medium transition-colors duration-200 ease-in-out w-fit text-lg',
+  'font-medium transition-colors duration-200 ease-in-out w-fit text-lg flex items-center justify-center',
   {
     variants: {
       variant: {
@@ -27,13 +28,16 @@ const buttonVariants = cva(
 
 interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {}
+    VariantProps<typeof buttonVariants> {
+  isLoading?: boolean
+}
 
 export const Button = ({
   variant,
   size,
   children,
   className,
+  isLoading,
   ...props
 }: ButtonProps) => {
   return (
@@ -41,7 +45,7 @@ export const Button = ({
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     >
-      {children}
+      {isLoading ? <LoaderCircle className="animate-spin size-4" /> : children}
     </button>
   )
 }

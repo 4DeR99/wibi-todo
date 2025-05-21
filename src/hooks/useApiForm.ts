@@ -1,6 +1,11 @@
-import axios from 'axios'
-import { useCallback, useState } from 'react'
+'use client'
+
+import { api } from '@/config/api'
+import { useMutation } from '@tanstack/react-query'
+import { AxiosResponse } from 'axios'
+import { useCallback } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { useLocalStorage } from 'usehooks-ts'
 
 interface UseApiFormProps<
   // for some reason I have to do this again otherwise react hook form complains
@@ -17,8 +22,8 @@ interface UseApiFormProps<
 
 export function useApiForm<
   FormData extends FieldValues,
-  ResponseType = FormData,
-  RequestType = FormData,
+  ResponseType,
+  RequestType,
 >({
   url,
   form, // from react hook form
@@ -26,27 +31,40 @@ export function useApiForm<
   afterApiCall,
   onError = (error) => error,
 }: UseApiFormProps<FormData, ResponseType, RequestType>) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [token] = useLocalStorage('token', '')
+
+  const { mutate, isPending, error, reset } = useMutation<
+    AxiosResponse<ResponseType>,
+    Error,
+    FormData
+  >({
+    mutationFn: async (values: FormData) => {
+      const request = beforeApiCall
+        ? await beforeApiCall(values)
+        : (values as unknown as RequestType)
+      return api.post(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        request,
+      })
+    },
+    onError: (error) => {
+      onError(error as Error)
+    },
+    onSuccess: async (data) => {
+      afterApiCall ? await afterApiCall(data.data) : data
+    },
+  })
 
   const onSubmit = form.handleSubmit(
     useCallback(
       async (values: FormData) => {
-        try {
-          const request = beforeApiCall
-            ? await beforeApiCall(values)
-            : (values as unknown as RequestType)
-          setIsLoading(true)
-          const response = await axios.post(url, request)
-          afterApiCall ? await afterApiCall(response.data) : response.data
-        } catch (error) {
-          onError(error as Error)
-        } finally {
-          setIsLoading(false)
-        }
+        mutate(values)
       },
       [form, beforeApiCall, afterApiCall, url],
     ),
   )
 
-  return { isLoading, onSubmit }
+  return { onSubmit, isPending, error, reset }
 }
