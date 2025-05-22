@@ -42,12 +42,15 @@ export function useApiForm<
       const request = beforeApiCall
         ? await beforeApiCall(values)
         : (values as unknown as RequestType)
-      return api.post(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      return api.post(
+        url,
+        { request },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-        request,
-      })
+      )
     },
     onError: (error) => {
       onError(error as Error)

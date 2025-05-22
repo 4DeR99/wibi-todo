@@ -13,9 +13,9 @@ import { schema, LoginSchema } from './LoginSchema'
 import { useApiForm } from '@/hooks/useApiForm'
 import { apiRoutes } from '@/config/apiRoutes'
 import { AxiosError } from 'axios'
-import { useLocalStorage } from 'usehooks-ts'
 import { useRouter } from 'next/navigation'
 import { Role } from '@/types'
+import { useAuth } from '@/hooks/useAuth'
 
 interface LoginResponse {
   user: {
@@ -26,9 +26,7 @@ interface LoginResponse {
 }
 
 export const LoginForm = () => {
-  const [, setToken] = useLocalStorage('authToken', '')
-  const [, setUsername] = useLocalStorage('username', '')
-  const [, setRole] = useLocalStorage('role', '')
+  const { login } = useAuth()
   const form = useForm<LoginSchema>({
     resolver: yupResolver(schema),
   })
@@ -43,9 +41,7 @@ export const LoginForm = () => {
     url: apiRoutes.auth.login,
     form,
     afterApiCall: (response) => {
-      setToken(response.user.token)
-      setUsername(response.user.username)
-      setRole(response.user.role)
+      login(response.user.token, response.user.role, response.user.username)
       router.push('/tasks')
     },
   })

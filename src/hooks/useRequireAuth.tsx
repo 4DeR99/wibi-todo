@@ -1,23 +1,24 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useLocalStorage } from 'usehooks-ts'
 import { LoaderCircle } from 'lucide-react'
 import { useGetTasks } from './useGetTasks'
+import { useAuth } from './useAuth'
 
 // should have a hasAccess function that checks if the user has access to the component but not needed here
 export function useRequireAuth(
   Component: () => React.JSX.Element,
-  redirectTo?: string,
+  redirectTo = '/',
 ) {
   const router = useRouter()
-  const [token] = useLocalStorage('authToken', '')
-  const [username] = useLocalStorage('username', '')
-  const [role] = useLocalStorage('role', '')
-
+  const { isAuthenticated } = useAuth()
   // since there is no /me endpoint I'm using the get tasks endpoint to check if the user is authenticated
   const { isLoading, isError } = useGetTasks()
+
+  useEffect(() => {
+    if (!isAuthenticated || isError) router?.push(redirectTo)
+  }, [isAuthenticated, router, redirectTo, isError])
 
   if (isLoading)
     return (
@@ -25,7 +26,6 @@ export function useRequireAuth(
         <LoaderCircle className="animate-spin" />
       </div>
     )
-  if (!token || !username || !role || isError) router.push(redirectTo || '/')
 
   return Component()
 }
