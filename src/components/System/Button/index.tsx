@@ -11,6 +11,7 @@ const buttonVariants = cva(
         primary: 'bg-accent text-white hover:bg-accent/80',
         attentive: 'bg-light-grey text-main-red hover:bg-red-500/20',
         icon: 'flex items-center justify-center size-[34px] bg-transparent',
+        ghost: 'bg-transparent hover:bg-transparent',
       },
       size: {
         sm: 'py-3 px-[15px] rounded-[12px]',
