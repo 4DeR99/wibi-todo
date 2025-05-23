@@ -18,7 +18,7 @@ export const Header = () => {
   }, [logout, router])
 
   return (
-    <header className="w-full ~/xl:~py-[0.75rem]/[3.125rem]">
+    <header className="w-full ~/xl:~py-[2rem]/[3.125rem]">
       <Container className="flex justify-between items-center">
         <Image
           src={Logo}

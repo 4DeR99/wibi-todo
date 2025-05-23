@@ -16,6 +16,7 @@ import { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
 import { Role } from '@/types'
 import { useAuth } from '@/hooks/useAuth'
+import { toast } from 'sonner'
 
 interface LoginResponse {
   user: {
@@ -42,7 +43,8 @@ export const LoginForm = () => {
     form,
     afterApiCall: (response) => {
       login(response.user.token, response.user.role, response.user.username)
-      router.push('/tasks')
+      toast.success('Login successful')
+      router.push('/home')
     },
   })
 
@@ -53,6 +55,7 @@ export const LoginForm = () => {
     register,
     formState: { errors },
   } = form
+
   return (
     <div className="w-[85%] max-w-[380px] border-accent border rounded-[25px] flex flex-col items-center p-6">
       <Image
@@ -68,8 +71,9 @@ export const LoginForm = () => {
       >
         <h2 className="font-bold mb-8 text-2xl text-center">Login</h2>
         <div className="mb-3">
-          <Label className="mb-2.5">Email</Label>
+          <Label className="mb-2.5">Username</Label>
           <Input
+            variant="login"
             placeholder="username"
             type="text"
             className="mb-1"
