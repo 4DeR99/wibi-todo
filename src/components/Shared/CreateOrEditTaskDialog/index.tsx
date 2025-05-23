@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import React from 'react'
+import React, { useState } from 'react'
 import { useGetUsers } from '@/hooks/useGetUsers'
 import { TextArea } from '@/components/System/TextArea'
 import { CreateTaskType, schema } from './validationSchema'
@@ -38,6 +38,7 @@ interface CreateOrEditTaskDialogProps {
 export const CreateOrEditTaskDialog = ({
   task,
 }: CreateOrEditTaskDialogProps) => {
+  const [open, setOpen] = useState(false)
   const { data: users } = useGetUsers()
   const addTask = useTasksStore((state) => state.addTask)
   const form = useForm<CreateTaskType>({
@@ -55,6 +56,7 @@ export const CreateOrEditTaskDialog = ({
     Task,
     CreateTaskType
   >({
+    method: task ? 'put' : 'post',
     url: task
       ? setRouteIds(apiRoutes.tasks.updateTask, [task.id.toString()])
       : apiRoutes.tasks.createTask,
@@ -62,6 +64,7 @@ export const CreateOrEditTaskDialog = ({
     afterApiCall: (response) => {
       addTask(response)
       toast.success('Task created successfully')
+      setOpen(false)
     },
     onError: (error) => {
       toast.error('Failed to create task')
@@ -79,7 +82,10 @@ export const CreateOrEditTaskDialog = ({
   const selectValue = watch('assignedTo')
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>
         <Button
           variant={task ? 'ghost' : 'icon'}

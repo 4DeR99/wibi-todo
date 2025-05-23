@@ -13,6 +13,7 @@ interface UseApiFormProps<
   ResponseType,
   RequestType,
 > {
+  method?: 'post' | 'put' // only need these two for now
   url: string
   form: UseFormReturn<FormData>
   beforeApiCall?: (values: FormData) => Promise<RequestType> | RequestType
@@ -25,6 +26,7 @@ export function useApiForm<
   ResponseType,
   RequestType,
 >({
+  method = 'post',
   url,
   form, // from react hook form
   beforeApiCall,
@@ -42,7 +44,7 @@ export function useApiForm<
       const request = beforeApiCall
         ? await beforeApiCall(values)
         : (values as unknown as RequestType)
-      return api.post(
+      return api[method](
         url,
         { ...request },
         {

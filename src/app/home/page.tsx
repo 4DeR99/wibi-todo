@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Role } from '@/types'
 import React, { useMemo } from 'react'
 import { Task } from '@/components/Shared/Task'
-import { CreateOrEditTaskDialog } from '@/components/Shared/CreateTaskDialog'
+import { CreateOrEditTaskDialog } from '@/components/Shared/CreateOrEditTaskDialog'
 import { useTasksStore } from '@/lib/zustand/tasks-store'
 
 export default () => {

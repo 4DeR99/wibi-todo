@@ -6,7 +6,7 @@ import { Button } from '@/components/System/Button'
 import { cn } from '@/lib/utils'
 import { Status, type Task as TaskType } from '@/types'
 import React from 'react'
-import { CreateOrEditTaskDialog } from '../CreateTaskDialog'
+import { CreateOrEditTaskDialog } from '../CreateOrEditTaskDialog'
 
 interface TaskProps {
   task: TaskType
