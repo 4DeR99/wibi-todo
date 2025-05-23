@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 ## Getting Started
 
 First, run the development server:
@@ -16,21 +14,21 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## First step
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Please go ahead and create the users from https://recruter-backend.vercel.app/docs/
+the users created from the api get cleared after a certain time so providing one here is not gonna work.
 
-## Learn More
+## after
 
-To learn more about Next.js, take a look at the following resources:
+after login in with your user you will be automatically navigated to /home 
+not / since its for landing pages and we don't have one
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## please note
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+I wasn't working on this full time since I was busy with other work but over all some things I noticed:
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ - Should be username in the login page instead of email
+ - There is no /users/me (very important!!!) route to confirm if user is logged in so I had to use a workaround, basically the I used the token saved in the local storage and sent a get request to /api/taks to check if the token is valid, and I also saved the role and username in localstorage.
+ - It could've been better to provide the api repo for us to clone and run locally, it was verry annoying to deal with other guys perma deleting tasks and playing with them.
+ - for some reason the get tasks end keep sending back empty array and goes back to normal every now and then.
