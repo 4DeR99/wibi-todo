@@ -1,17 +1,15 @@
-'use client'
-
 import { api } from '@/config/api'
-import { useQuery } from '@tanstack/react-query'
-import { Task } from '@/types'
-import { useLocalStorage } from 'usehooks-ts'
 import { apiRoutes } from '@/config/apiRoutes'
+import { User } from '@/types'
+import { useQuery } from '@tanstack/react-query'
+import { useLocalStorage } from 'usehooks-ts'
 
-export function useGetTasks() {
+export const useGetUsers = () => {
   const [token] = useLocalStorage('authToken', '')
-  const { data, isLoading, isError } = useQuery<Task[]>({
-    queryKey: ['tasks'],
+  const { data, isLoading, isError } = useQuery<User[]>({
+    queryKey: ['users'],
     queryFn: async () => {
-      const res = await api.get(apiRoutes.tasks.getAll, {
+      const res = await api.get<User[]>(apiRoutes.users.getAll, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

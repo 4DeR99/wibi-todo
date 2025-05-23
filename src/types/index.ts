@@ -19,3 +19,8 @@ export interface Task {
   status: Status
   assignedTo: string
 }
+
+export interface User {
+  username: string
+  role: Role
+}

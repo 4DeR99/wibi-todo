@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import { useCallback } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useLocalStorage } from 'usehooks-ts'
+import { useAuth } from './useAuth'
 
 interface UseApiFormProps<
   // for some reason I have to do this again otherwise react hook form complains
@@ -31,7 +31,7 @@ export function useApiForm<
   afterApiCall,
   onError = (error) => error,
 }: UseApiFormProps<FormData, ResponseType, RequestType>) {
-  const [token] = useLocalStorage('token', '')
+  const { token } = useAuth()
 
   const { mutate, isPending, error, reset } = useMutation<
     AxiosResponse<ResponseType>,
@@ -44,7 +44,7 @@ export function useApiForm<
         : (values as unknown as RequestType)
       return api.post(
         url,
-        { request },
+        { ...request },
         {
           headers: {
             Authorization: `Bearer ${token}`,

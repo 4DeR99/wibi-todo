@@ -1,16 +1,30 @@
 import { cn } from '@/lib/utils'
+import { cva, VariantProps } from 'class-variance-authority'
 import React from 'react'
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+const inputVariants = cva(
+  'w-full border-none focus:outline-none rounded-[15px] bg-light-grey',
+  {
+    variants: {
+      variant: {
+        default: 'px-5 py-3',
+        login: 'p-[15px]',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+)
 
-export const Input = ({ className, ...props }: InputProps) => {
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof inputVariants> {}
+
+export const Input = ({ className, variant, ...props }: InputProps) => {
   return (
     <input
-      className={cn(
-        'w-full border-none p-[15px] focus:outline-none rounded-[15px] bg-light-grey',
-        className,
-      )}
+      className={cn(inputVariants({ variant }), className)}
       {...props}
     />
   )

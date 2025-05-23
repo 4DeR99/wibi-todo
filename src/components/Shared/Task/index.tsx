@@ -1,0 +1,69 @@
+import { Checked } from '@/components/Icons/Checked'
+import { CilcleChecked } from '@/components/Icons/CilcleChecked'
+import { Pencil } from '@/components/Icons/Pencil'
+import { Trash } from '@/components/Icons/Trash'
+import { Button } from '@/components/System/Button'
+import { cn } from '@/lib/utils'
+import { Status, type Task as TaskType } from '@/types'
+import React from 'react'
+import { CreateOrEditTaskDialog } from '../CreateTaskDialog'
+
+interface TaskProps {
+  task: TaskType
+  isAdmin?: boolean
+  className?: string
+}
+
+export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
+  const isTaskCompleted = task.status === Status.COMPLETED
+
+  return (
+    <div
+      className={cn(
+        'w-full rounded-[15px] px-5 py-[15px] flex gap-2.5 items-center group bg-light-grey',
+        className,
+      )}
+    >
+      {isTaskCompleted && <Checked className="text-accent" />}
+      <div className="space-y-2 grow truncate">
+        {isAdmin && <p className="text-accent text-sm">@{task.assignedTo}</p>}
+        <h3
+          className={cn('font-semibold text-lg', {
+            'line-through': isTaskCompleted,
+          })}
+        >
+          {task.title}
+        </h3>
+        <p
+          className={cn('text-stale-blue text-sm', {
+            'line-through': isTaskCompleted,
+          })}
+        >
+          {task.description.length > 70
+            ? `${task.description.slice(0, 70)}...`
+            : task.description}
+        </p>
+      </div>
+      <div className="items-center ~gap-1/2.5 hidden group-hover:flex">
+        {!isTaskCompleted && <CreateOrEditTaskDialog task={task} />}
+        {isAdmin && (
+          <Button
+            variant="icon"
+            size="icon"
+          >
+            <Trash className="text-main-red" />
+          </Button>
+        )}
+        {!isTaskCompleted && (
+          <Button
+            className="flex gap-2"
+            size="sm"
+          >
+            <CilcleChecked className="text-white" />
+            <span className="text-white hidden sm:block">done</span>
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}
