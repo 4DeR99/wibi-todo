@@ -42,7 +42,6 @@ export const LoginForm = () => {
     url: apiRoutes.auth.login,
     form,
     afterApiCall: (response) => {
-      console.log(response)
       login(response.user.token, response.user.role, response.user.username)
       toast.success('Login successful')
       router.push('/home')

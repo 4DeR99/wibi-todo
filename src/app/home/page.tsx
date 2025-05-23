@@ -49,7 +49,6 @@ export default () => {
           <Task
             key={task.id}
             task={task}
-            isAdmin={isAdmin}
           />
         ))}
         {isAdmin && <CreateOrEditTaskDialog />}

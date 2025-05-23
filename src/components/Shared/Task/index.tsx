@@ -3,23 +3,26 @@ import { CilcleChecked } from '@/components/Icons/CilcleChecked'
 import { Trash } from '@/components/Icons/Trash'
 import { Button } from '@/components/System/Button'
 import { cn } from '@/lib/utils'
-import { Status, type Task as TaskType } from '@/types'
+import { Role, Status, type Task as TaskType } from '@/types'
 import React from 'react'
 import { CreateOrEditTaskDialog } from '../CreateOrEditTaskDialog'
 import { useDeleteTask } from '@/hooks/useDeleteTask'
 import { useCompleteTask } from '@/hooks/useCompleteTask'
+import { useAuth } from '@/hooks/useAuth'
 
 interface TaskProps {
   task: TaskType
-  isAdmin?: boolean
   className?: string
 }
 
-export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
+export const Task = ({ task, className }: TaskProps) => {
   const isTaskCompleted = task.status === Status.COMPLETED
-
+  const { role } = useAuth()
   const { deleteTask, isPending: isDeletePending } = useDeleteTask()
   const { completeTask, isPending: isCompletePending } = useCompleteTask()
+
+  const isAdmin = role === Role.ADMIN
+
   return (
     <div
       className={cn(
@@ -47,7 +50,7 @@ export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
             : task.description}
         </p>
       </div>
-      <div className="items-center ~gap-1/2.5 hidden group-hover:flex">
+      <div className="items-center ~/md:~gap-1/2.5 hidden group-hover:flex">
         {!isTaskCompleted && <CreateOrEditTaskDialog task={task} />}
         {isAdmin && (
           <Button

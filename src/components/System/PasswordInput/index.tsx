@@ -23,7 +23,10 @@ export const PasswordInput = ({ className, ...props }: PasswordInputProps) => {
         {...props}
         type={showPassword ? 'text' : 'password'}
       />
-      <button onClick={() => setShowPassword(!showPassword)}>
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+      >
         <Image
           src={showPassword ? EyeOff : EyeOn}
           alt="eye"

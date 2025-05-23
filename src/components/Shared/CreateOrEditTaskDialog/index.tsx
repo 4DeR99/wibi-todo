@@ -24,12 +24,13 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import { useApiForm } from '@/hooks/useApiForm'
 import { apiRoutes } from '@/config/apiRoutes'
-import { Task } from '@/types'
+import { Role, Task } from '@/types'
 import { toast } from 'sonner'
 import { useTasksStore } from '@/lib/zustand/tasks-store'
 import { setRouteIds } from '@/utils/setRouteIds'
 import { cn } from '@/lib/utils'
 import { Pencil } from 'lucide-react'
+import { useAuth } from '@/hooks/useAuth'
 
 interface CreateOrEditTaskDialogProps {
   task?: Task
@@ -41,6 +42,10 @@ export const CreateOrEditTaskDialog = ({
   const [open, setOpen] = useState(false)
   const { data: users } = useGetUsers()
   const { addTask, updateTask } = useTasksStore()
+  const { role } = useAuth()
+
+  const isAdmin = role === Role.ADMIN
+
   const form = useForm<CreateTaskType>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -114,7 +119,11 @@ export const CreateOrEditTaskDialog = ({
           onSubmit={onSubmit}
         >
           <div className="flex flex-col sm:flex-row gap-[15px] w-full">
-            <div className="flex flex-col gap-2.5 sm:w-2/3">
+            <div
+              className={cn('flex flex-col gap-2.5 w-full', {
+                'sm:w-2/3': isAdmin,
+              })}
+            >
               <Label className="text-lg">Task title</Label>
               <Input
                 placeholder="What's in your mind?"
@@ -124,40 +133,42 @@ export const CreateOrEditTaskDialog = ({
                 <p className="text-sm text-red-500">{errors.title.message}</p>
               )}
             </div>
-            <div className="flex flex-col gap-2.5 grow">
-              <Label className="text-lg">Assign to</Label>
-              <Select
-                value={selectValue}
-                onValueChange={(value) => {
-                  setValue('assignedTo', value)
-                  clearErrors('assignedTo')
-                }}
-              >
-                <SelectTrigger className="!font-inter">
-                  <SelectValue placeholder="Assign to" />
-                </SelectTrigger>
-                <SelectContent className="!font-inter">
-                  {users?.length === 0 && (
-                    <label className="text-sm text-muted-foreground p-2">
-                      No users found
-                    </label>
-                  )}
-                  {users?.map((user) => (
-                    <SelectItem
-                      key={user.username}
-                      value={user.username}
-                    >
-                      {user.username}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.assignedTo && (
-                <p className="text-sm text-red-500">
-                  {errors.assignedTo.message}
-                </p>
-              )}
-            </div>
+            {isAdmin && (
+              <div className="flex flex-col gap-2.5 grow">
+                <Label className="text-lg">Assign to</Label>
+                <Select
+                  value={selectValue}
+                  onValueChange={(value) => {
+                    setValue('assignedTo', value)
+                    clearErrors('assignedTo')
+                  }}
+                >
+                  <SelectTrigger className="!font-inter">
+                    <SelectValue placeholder="Assign to" />
+                  </SelectTrigger>
+                  <SelectContent className="!font-inter">
+                    {users?.length === 0 && (
+                      <label className="text-sm text-muted-foreground p-2">
+                        No users found
+                      </label>
+                    )}
+                    {users?.map((user) => (
+                      <SelectItem
+                        key={user.username}
+                        value={user.username}
+                      >
+                        {user.username}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.assignedTo && (
+                  <p className="text-sm text-red-500">
+                    {errors.assignedTo.message}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-2.5">
             <Label className="text-lg">Description</Label>
