@@ -88,11 +88,12 @@ export const CreateOrEditTaskDialog = ({
     >
       <DialogTrigger asChild>
         <Button
-          variant={task ? 'ghost' : 'icon'}
-          size={task ? 'md' : 'icon'}
+          variant={task ? 'icon' : 'ghost'}
+          size={task ? 'icon' : 'md'}
           className={cn(
-            'text-pale-white flex gap-[15px] p-[15px] w-full justify-start',
-            task && 'w-fit',
+            'text-pale-white',
+            { 'w-fit': task },
+            { 'w-full p-[15px] gap-[15px] flex justify-start': !task },
           )}
         >
           {!task && (

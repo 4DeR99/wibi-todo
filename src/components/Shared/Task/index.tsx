@@ -1,12 +1,12 @@
 import { Checked } from '@/components/Icons/Checked'
 import { CilcleChecked } from '@/components/Icons/CilcleChecked'
-import { Pencil } from '@/components/Icons/Pencil'
 import { Trash } from '@/components/Icons/Trash'
 import { Button } from '@/components/System/Button'
 import { cn } from '@/lib/utils'
 import { Status, type Task as TaskType } from '@/types'
 import React from 'react'
 import { CreateOrEditTaskDialog } from '../CreateOrEditTaskDialog'
+import { useDeleteTask } from '@/hooks/useDeleteTask'
 
 interface TaskProps {
   task: TaskType
@@ -16,6 +16,8 @@ interface TaskProps {
 
 export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
   const isTaskCompleted = task.status === Status.COMPLETED
+
+  const { deleteTask, isPending } = useDeleteTask()
 
   return (
     <div
@@ -50,6 +52,8 @@ export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
           <Button
             variant="icon"
             size="icon"
+            onClick={() => deleteTask(task.id)}
+            disabled={isPending}
           >
             <Trash className="text-main-red" />
           </Button>
