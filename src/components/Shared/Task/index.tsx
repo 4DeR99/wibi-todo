@@ -7,6 +7,7 @@ import { Status, type Task as TaskType } from '@/types'
 import React from 'react'
 import { CreateOrEditTaskDialog } from '../CreateOrEditTaskDialog'
 import { useDeleteTask } from '@/hooks/useDeleteTask'
+import { useCompleteTask } from '@/hooks/useCompleteTask'
 
 interface TaskProps {
   task: TaskType
@@ -17,8 +18,8 @@ interface TaskProps {
 export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
   const isTaskCompleted = task.status === Status.COMPLETED
 
-  const { deleteTask, isPending } = useDeleteTask()
-
+  const { deleteTask, isPending: isDeletePending } = useDeleteTask()
+  const { completeTask, isPending: isCompletePending } = useCompleteTask()
   return (
     <div
       className={cn(
@@ -53,7 +54,7 @@ export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
             variant="icon"
             size="icon"
             onClick={() => deleteTask(task.id)}
-            disabled={isPending}
+            disabled={isDeletePending}
           >
             <Trash className="text-main-red" />
           </Button>
@@ -62,6 +63,8 @@ export const Task = ({ task, isAdmin = false, className }: TaskProps) => {
           <Button
             className="flex gap-2"
             size="sm"
+            onClick={() => completeTask(task)}
+            disabled={isCompletePending}
           >
             <CilcleChecked className="text-white" />
             <span className="text-white hidden sm:block">done</span>

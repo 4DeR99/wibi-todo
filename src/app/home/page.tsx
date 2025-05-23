@@ -2,7 +2,7 @@
 
 import { Container } from '@/components/System/Container'
 import { useAuth } from '@/hooks/useAuth'
-import { Role } from '@/types'
+import { Role, Status } from '@/types'
 import React, { useMemo } from 'react'
 import { Task } from '@/components/Shared/Task'
 import { CreateOrEditTaskDialog } from '@/components/Shared/CreateOrEditTaskDialog'
@@ -10,13 +10,21 @@ import { useTasksStore } from '@/lib/zustand/tasks-store'
 
 export default () => {
   const { role, username } = useAuth()
-  const taskState = useTasksStore((state) => state.tasks)
+  const { tasks: taskState } = useTasksStore()
 
   const isAdmin = role === Role.ADMIN
 
   const tasks = useMemo(() => {
-    if (isAdmin) return taskState
-    return taskState?.filter((task) => task.assignedTo === username)
+    const sortedTasks = taskState?.sort((a, b) => {
+      if (a.status === Status.COMPLETED && b.status !== Status.COMPLETED)
+        return 1
+      if (a.status !== Status.COMPLETED && b.status === Status.COMPLETED)
+        return -1
+      return 0
+    })
+
+    if (isAdmin) return sortedTasks
+    return sortedTasks?.filter((task) => task.assignedTo === username)
   }, [taskState, isAdmin, username])
 
   return (

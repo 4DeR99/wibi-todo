@@ -40,7 +40,7 @@ export const CreateOrEditTaskDialog = ({
 }: CreateOrEditTaskDialogProps) => {
   const [open, setOpen] = useState(false)
   const { data: users } = useGetUsers()
-  const addTask = useTasksStore((state) => state.addTask)
+  const { addTask, updateTask } = useTasksStore()
   const form = useForm<CreateTaskType>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -62,12 +62,14 @@ export const CreateOrEditTaskDialog = ({
       : apiRoutes.tasks.createTask,
     form,
     afterApiCall: (response) => {
-      addTask(response)
-      toast.success('Task created successfully')
+      task ? updateTask(task.id, response) : addTask(response)
+      toast.success(
+        task ? 'Task updated successfully' : 'Task created successfully',
+      )
       setOpen(false)
     },
     onError: (error) => {
-      toast.error('Failed to create task')
+      toast.error(task ? 'Failed to update task' : 'Failed to create task')
     },
   })
 

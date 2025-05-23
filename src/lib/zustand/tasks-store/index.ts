@@ -19,10 +19,10 @@ export const useTasksStore = create<TasksStore>((set) => ({
       tasks: state.tasks.filter((task) => task.id !== taskId),
     }))
   },
-  updateTask: (taskId: number, task: Task) => {
+  updateTask: (taskId: number, updatedTask: Task) => {
     set((state) => ({
       tasks: state.tasks.map((task) =>
-        task.id === taskId ? { ...task, ...task } : task,
+        task.id === taskId ? { ...task, ...updatedTask } : task,
       ),
     }))
   },
